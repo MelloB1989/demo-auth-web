@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
+import mg from '../../lib/mailgun/mailer';
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
 dotenv.config();
@@ -7,6 +8,7 @@ import { PrismaClient } from "@prisma/client";
 
 const JWT_SECRET=process.env.JWT_SECRET;
 const prisma = new PrismaClient();
+
 
 export default async function resetPassword(req: NextApiRequest, res: NextApiResponse) {
     const { password, token } = req.body;

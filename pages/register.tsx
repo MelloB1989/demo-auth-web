@@ -20,7 +20,7 @@ export default function Register() {
             body: JSON.stringify(data),
         })
         const resData = await res.json();
-        console.log(resData);
+        setError(resData.message)
     }
 
     return(

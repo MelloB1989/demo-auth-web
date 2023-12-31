@@ -14,18 +14,22 @@ export default async function Register(req: NextApiRequest, res: NextApiResponse
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email: email } });
+    console.log(user)
     if (user) {
         return res.status(401).json({ message: 'Email already registered' });
     }
-    const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({ data: { email: email, password: passwordHash } });
-    //Set jwt token as set-cookie header in response
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET!, { expiresIn: '1d' });
-    res.setHeader('Set-Cookie', cookie.serialize('auth', token, {
-        httpOnly: true,
-        sameSite: 'strict',
-        maxAge: 86400,
-        path: '/',
-    }));
+    else {
+        const passwordHash = await bcrypt.hash(password, 10);
+        const newUser = await prisma.user.create({ data: { email: email, password: passwordHash } });
+        //Set jwt token as set-cookie header in response
+        const token = jwt.sign({ userId: newUser.id }, JWT_SECRET!, { expiresIn: '1d' });
+        res.setHeader('Set-Cookie', cookie.serialize('auth', token, {
+            httpOnly: true,
+            sameSite: 'strict',
+            maxAge: 86400,
+            path: '/',
+        }));
+        res.status(200).json({message: "Registered!"})
+    }
     //res.json({ token });
 }
